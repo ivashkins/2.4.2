@@ -82,19 +82,6 @@ public class AppInit implements WebMvcConfigurer {
     }
 
     @Bean
-    public LocalSessionFactoryBean getSessionFactory() {
-        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-        factoryBean.setDataSource(getDataSource());
-
-        Properties props = new Properties();
-        props.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-        props.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-
-        factoryBean.setHibernateProperties(props);
-        factoryBean.setAnnotatedClasses(User.class);
-        return factoryBean;
-    }
-    @Bean
     public HibernateJpaVendorAdapter getAdapter(){
         HibernateJpaVendorAdapter adapter=new HibernateJpaVendorAdapter();
         return adapter;
@@ -104,7 +91,7 @@ public class AppInit implements WebMvcConfigurer {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(getDataSource());
         emf.setJpaVendorAdapter(getAdapter());
-        emf.setPackagesToScan("ivashproject"); //The packages to search for Entities, line required to avoid looking into the persistence.xml
+        emf.setPackagesToScan("ivashproject"); //The packages to search for Entities, line required to avoid looking into the persistence.xm
         return emf;
     }
     @Bean
