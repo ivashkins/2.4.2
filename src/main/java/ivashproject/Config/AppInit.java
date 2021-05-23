@@ -1,6 +1,7 @@
 package ivashproject.Config;
 
 import ivashproject.Model.User;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -8,10 +9,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -21,6 +25,7 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.PersistenceProvider;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -89,13 +94,27 @@ public class AppInit implements WebMvcConfigurer {
         factoryBean.setAnnotatedClasses(User.class);
         return factoryBean;
     }
-
     @Bean
-    public HibernateTransactionManager getTransactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(getSessionFactory().getObject());
-        return transactionManager;
+    public HibernateJpaVendorAdapter getAdapter(){
+        HibernateJpaVendorAdapter adapter=new HibernateJpaVendorAdapter();
+        return adapter;
     }
+    @Bean
+    public LocalContainerEntityManagerFactoryBean emf(){
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setDataSource(getDataSource());
+        emf.setJpaVendorAdapter(getAdapter());
+        emf.setPackagesToScan("ivashproject"); //The packages to search for Entities, line required to avoid looking into the persistence.xml
+        return emf;
+    }
+    @Bean
+   public JpaTransactionManager getJPAManager(){
+        JpaTransactionManager manager=new JpaTransactionManager();
+        manager.setEntityManagerFactory(emf().getObject());
+        return manager;
+    }
+
+
 
 
 }

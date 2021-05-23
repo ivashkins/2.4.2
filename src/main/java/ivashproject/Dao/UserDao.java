@@ -4,31 +4,34 @@ import ivashproject.Model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
-
-@Repository
+@Component
 public class UserDao {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext(unitName = "emf")
+    private EntityManager manager;
 
     @Transactional
     public void addUser(User user) {
-        sessionFactory.getCurrentSession().save(user);
+        manager.persist(user);
     }
 
     @Transactional
     public void deleteUser(User user){
-        sessionFactory.getCurrentSession().delete(user);
+        manager.remove(manager.contains(user) ? user : manager.merge(user));
     }
 
     @Transactional
     public void updateUser(long id,User updateUser){
-        TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("update User set name= :name, lastName=:lastname,age=:age where id=:id");
+        Query query=manager.createQuery("update User set name= :name, lastName=:lastname,age=:age where id=:id");
         query.setParameter("name",updateUser.getName());
         query.setParameter("lastname",updateUser.getLastName());
         query.setParameter("age",updateUser.getAge());
@@ -38,14 +41,13 @@ public class UserDao {
 
     @Transactional(readOnly = true)
     public List<User> userList() {
-        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User", User.class);
-        return query.getResultList();
+        return manager.createQuery("select u from User u",User.class).getResultList();
     }
 @Transactional(readOnly = true)
     public User show(long id) {
-        TypedQuery<User>query=sessionFactory.getCurrentSession().createQuery("from User where id= :id");
+        Query query=manager.createQuery("select u from User u  where id= :id");
         query.setParameter("id",id);
-        return query.getSingleResult();
+        return (User) query.getSingleResult();
     }
 
 }
