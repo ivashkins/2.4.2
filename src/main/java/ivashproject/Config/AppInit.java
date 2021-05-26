@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -31,20 +32,22 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:db.properties")
-@ComponentScan("ivashproject")
+@ComponentScan("ivashproject.*")
 @EnableTransactionManagement
 @EnableWebMvc
 public class AppInit implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
+    private final Environment env;
+
+
+
 
     @Autowired
-    public AppInit(ApplicationContext applicationContext) {
+    public AppInit(ApplicationContext applicationContext, Environment env) {
         this.applicationContext = applicationContext;
+        this.env = env;
     }
-
-    @Autowired
-    Environment env;
 
 
     @Bean
@@ -82,26 +85,26 @@ public class AppInit implements WebMvcConfigurer {
     }
 
     @Bean
-    public HibernateJpaVendorAdapter getAdapter(){
-        HibernateJpaVendorAdapter adapter=new HibernateJpaVendorAdapter();
+    public HibernateJpaVendorAdapter getAdapter() {
+        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         return adapter;
     }
+
     @Bean
-    public LocalContainerEntityManagerFactoryBean emf(){
-        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setDataSource(getDataSource());
-        emf.setJpaVendorAdapter(getAdapter());
-        emf.setPackagesToScan("ivashproject"); //The packages to search for Entities, line required to avoid looking into the persistence.xm
-        return emf;
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setDataSource(getDataSource());
+        entityManagerFactory.setJpaVendorAdapter(getAdapter());
+        entityManagerFactory.setPackagesToScan("ivashproject.*");
+        return entityManagerFactory;
     }
+
     @Bean
-   public JpaTransactionManager getJPAManager(){
-        JpaTransactionManager manager=new JpaTransactionManager();
-        manager.setEntityManagerFactory(emf().getObject());
+    public JpaTransactionManager getJPAManager() {
+        JpaTransactionManager manager = new JpaTransactionManager();
+        manager.setEntityManagerFactory(entityManagerFactory().getObject());
         return manager;
     }
-
-
 
 
 }

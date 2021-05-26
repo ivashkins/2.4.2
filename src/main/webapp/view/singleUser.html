@@ -9,10 +9,12 @@
 <div>
     <p th:text="${user.getName()}">V</p>
     <p th:text="${user.getLastName()}">V</p>
-    <p th:text="${user.getAge()}">V</p>
+    <p th:text="${user.getEmail()}">V</p>
+    <p th:text="${user.getId()}">V</p>
+    <p th:text="${user.getRole()}">V</p>
+    <p th:text="${user.getStatus()}">V</p>
     <br/>
-    <a th:href="@{/user/{id}/edit(id=${user.getId()})}">Edit</a>
-    <a th:href="@{/user/{id}/delete(id=${user.getId()})}">Delete this guy</a>
+    <a th:href="@{/logout}">SIR LOG OUT</a>
 
 </div>
 

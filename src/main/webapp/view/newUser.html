@@ -6,17 +6,28 @@
     <title>new User</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/user}" th:object="${user}">
+<form th:method="POST" th:action="@{/admin/create}" th:object="${user}">
     <label for="name">Enter name: </label>
     <input type="text" th:field="*{name}" id="name">
     <br/>
     <label for="lastName">Enter last name: </label>
     <input type="text" th:field="*{lastName}" id="lastName">
     <br/>
-    <label for="age">Enter age: </label>
-    <input type="text" th:field="*{age}" id="age">
+    <label for="password">Enter password: </label>
+    <input type="text" th:field="*{password}" id="password">
+    <br/>
+    <label for="email">Enter email: </label>
+    <input type="text" th:field="*{email}" id="email">
+    <br/>
+    <label for="role">Enter role: </label>
+    <input type="text" th:field="*{role}" id="role">
+    <br/>
+    <label for="status">Enter status: </label>
+    <input type="text" th:field="*{status}" id="status">
     <br/>
     <input type="submit" value="Add User">
+    <br/>
+    <a th:href="@{/logout}">MISTER LOG OUT</a>
 
 </form>
 

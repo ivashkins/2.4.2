@@ -6,16 +6,30 @@
     <title>update uSer</title>
 </head>
 <body>
-<form th:method="PATCH" th:action="@{/user/{id}(id=${user.getId})}" th:object="${user}">
+<form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
   <label for="name">Enter name: </label>
   <input type="text" th:field="*{name}" id="name">
   <br/>
   <label for="lastName">Enter last name: </label>
   <input type="text" th:field="*{lastName}" id="lastName">
   <br/>
-  <label for="age">Enter age: </label>
-  <input type="text" th:field="*{age}" id="age">
+  <label for="password">Enter last name: </label>
+  <input type="text" th:field="*{password}" id="password">
   <br/>
-  <input type="submit" value="Update User">
+  <label for="email">Enter email: </label>
+  <input type="text" th:field="*{email}" id="email">
+  <br/>
+  <label for="role">Enter role: </label>
+  <input type="text" th:field="*{role}" id="role">
+  <br/>
+  <label for="status">Enter status: </label>
+  <input type="text" th:field="*{status}" id="status">
+  <br/>
+  <input type="submit" value="Add User">
+  <br/>
+  <a th:href="@{/logout}">USER LOG OUT</a>
+
+</form>
+
 </body>
 </html>

@@ -64,6 +64,18 @@
       <version>2.3.1</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>5.5.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>5.5.0</version>
+    </dependency>
+
 
 
     <dependency>
@@ -71,6 +83,11 @@
       <artifactId>thymeleaf-spring5</artifactId>
       <version>3.0.12.RELEASE</version>
     </dependency>
+      <dependency>
+          <groupId>org.springframework.data</groupId>
+          <artifactId>spring-data-jpa</artifactId>
+          <version>2.5.0</version>
+      </dependency>
 
   </dependencies>
 
@@ -78,5 +95,15 @@
 
   <build>
     <finalName>2.3.1</finalName>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                  <source>9</source>
+                  <target>9</target>
+              </configuration>
+          </plugin>
+      </plugins>
   </build>
 </project>
