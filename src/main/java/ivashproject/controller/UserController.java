@@ -1,82 +1,69 @@
-package ivashproject.Controller;
+package ivashproject.controller;
 
-import ivashproject.Dao.UserDao;
-import ivashproject.Model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import ivashproject.model.User;
+import ivashproject.service.UserService;
+import ivashproject.service.UserServiceImpl;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 public class UserController {
+    final UserService userService;
 
-    final UserDao userDao;
-
-    public UserController(UserDao userDao) {
-        this.userDao = userDao;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/user")
     public String getUsers(ModelMap map, Authentication authentication) {
-        if(authentication!=null) {
-            User user = getShowUser(authentication.getName());
-            map.addAttribute("user", user);
-        }
+        userService.getUsers(map, authentication);
         return "singleUser";
     }
-    public User getShowUser(@PathVariable String name){
-        return userDao.show(name);
-    }
+
 
     @GetMapping("/admin/{id}")
     public String showUser(@PathVariable long id, ModelMap map) {
-        map.addAttribute("user", userDao.show(id));
+        userService.showUser(id, map);
         return "singleUser";
     }
 
     @GetMapping("/admin")
     public String adminRole(ModelMap map) {
-        map.addAttribute("users", userDao.userList());
+        userService.adminRole(map);
         return "admin";
     }
 
 
     @GetMapping("admin/new")
     public String newUser(ModelMap map) {
-        map.addAttribute("user", new User());
+        userService.newUser(map);
         return "newUser";
     }
 
 
     @PostMapping("/admin/create")
     public String create(@ModelAttribute("user") User user) {
-        PasswordEncoder encoder=new BCryptPasswordEncoder(12);
-        user.setPassword(encoder.encode(user.getPassword()));
-        userDao.addUser(user);
+        userService.create(user);
         return "redirect:/admin";
     }
 
     @GetMapping("/admin/{id}/edit")
     public String edit(@PathVariable("id") long id, ModelMap map) {
-        map.addAttribute("user", userDao.show(id));
+        userService.edit(id, map);
         return "edit";
     }
 
     @GetMapping("admin/{id}/delete")
     public String delete(@PathVariable("id") long id) {
-        userDao.deleteUser(userDao.show(id));
+        userService.delete(id);
         return "redirect:/admin";
     }
 
     @PatchMapping("admin/{id}")
     public String update(@ModelAttribute("user") User user, @PathVariable("id") long id) {
-        userDao.updateUser(id, user);
+        userService.update(id,user);
         return "redirect:/admin";
     }
 

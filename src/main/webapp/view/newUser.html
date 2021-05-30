@@ -19,17 +19,15 @@
     <label for="email">Enter email: </label>
     <input type="text" th:field="*{email}" id="email">
     <br/>
-    <label for="role">Enter role: </label>
-    <input type="text" th:field="*{role}" id="role">
-    <br/>
-    <label for="status">Enter status: </label>
-    <input type="text" th:field="*{status}" id="status">
+    <label for="admin">adminka</label>
+    <input type="checkbox" th:field="*{admin}" id="admin"/>
     <br/>
     <input type="submit" value="Add User">
     <br/>
     <a th:href="@{/logout}">MISTER LOG OUT</a>
 
 </form>
+
 
 </body>
 </html>

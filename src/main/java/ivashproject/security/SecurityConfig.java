@@ -1,7 +1,7 @@
-package ivashproject.Config;
+package ivashproject.security;
 
-import ivashproject.Config.handler.LoginSuccessHandler;
-import ivashproject.service.UserDetailServiceImpl;
+import ivashproject.model.User;
+import ivashproject.security.handler.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,19 +20,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableJpaRepositories("ivashproject.*")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final LoginSuccessHandler loginSuccessHandler;
+    private final UserDetailsService userDetailService;
 
-    private final UserDetailServiceImpl userDetailService;
 
-    public SecurityConfig(LoginSuccessHandler loginSuccessHandler, @Qualifier("userDet") UserDetailServiceImpl userDetailService) {
+
+    public SecurityConfig(@Qualifier("detailService") UserDetailServiceIml2 userDetailService,LoginSuccessHandler loginSuccessHandler) {
         this.loginSuccessHandler = loginSuccessHandler;
-        this.userDetailService = userDetailService;
+        this.userDetailService=userDetailService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/admin/*").hasAnyAuthority("user:write")
-                .antMatchers("/user").authenticated()
+                .antMatchers("/admin").hasAuthority("admin")
+                .antMatchers("/user").hasAuthority("user")
                 .and()
                 .formLogin()
                 .successHandler(loginSuccessHandler)
@@ -51,8 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Bean
-    public DaoAuthenticationProvider getDao(){
-        DaoAuthenticationProvider dao=new DaoAuthenticationProvider();
+    public DaoAuthenticationProvider getDao() {
+        DaoAuthenticationProvider dao = new DaoAuthenticationProvider();
         dao.setPasswordEncoder(passwordEncoder());
         dao.setUserDetailsService(userDetailService);
         return dao;

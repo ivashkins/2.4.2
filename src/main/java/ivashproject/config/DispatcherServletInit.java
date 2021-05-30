@@ -1,4 +1,4 @@
-package ivashproject.Config;
+package ivashproject.config;
 
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -6,7 +6,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-public class JavaConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 
     @Override
@@ -16,7 +16,7 @@ public class JavaConfig extends AbstractAnnotationConfigDispatcherServletInitial
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{AppInit.class};
+        return new Class[]{ApplicationInit.class};
     }
 
     @Override
